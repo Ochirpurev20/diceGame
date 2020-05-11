@@ -4,11 +4,14 @@ var activePlayer = 0;
 var onoo = [0, 0];
 // eeljiin onoo hadgalah
 var eeljOnoo = 0;
+//game status
+var gameStatus;
 //dice hadgalah
 var diceDom = document.querySelector(".dice");
 //shineer ehluuleh func
 startGame();
 function startGame() {
+  gameStatus = true;
   activePlayer = 0;
   onoo = [0, 0];
   eeljOnoo = 0;
@@ -34,40 +37,48 @@ function startGame() {
 
 //shoog shideh event listener
 document.querySelector(".btn-roll").addEventListener("click", function () {
-  var dice = Math.floor(Math.random() * 6) + 1;
-  //   alert("shoo: " + dice);
-  //shoonii zurgiig haragddag bolgoh
-  diceDom.style.display = "block";
-  //dice n toonii daguu zurgiig haruulah
-  diceDom.src = "dice-" + dice + ".png";
-  //toglogchiin eeljin onoog uurchilnu. 1s yalgaatai bol onoog nemne, 1 bol onoo 0 bolno
-  if (dice !== 1) {
-    eeljOnoo = eeljOnoo + dice;
-    document.getElementById("current-" + activePlayer).textContent = eeljOnoo;
+  if (gameStatus) {
+    var dice = Math.floor(Math.random() * 6) + 1;
+    //   alert("shoo: " + dice);
+    //shoonii zurgiig haragddag bolgoh
+    diceDom.style.display = "block";
+    //dice n toonii daguu zurgiig haruulah
+    diceDom.src = "dice-" + dice + ".png";
+    //toglogchiin eeljin onoog uurchilnu. 1s yalgaatai bol onoog nemne, 1 bol onoo 0 bolno
+    if (dice !== 1) {
+      eeljOnoo = eeljOnoo + dice;
+      document.getElementById("current-" + activePlayer).textContent = eeljOnoo;
+    } else {
+      eeljSolih();
+    }
   } else {
-    eeljSolih();
+    alert("game over. start new game");
   }
 });
 
 //hold tovchnii event listener
 document.querySelector(".btn-hold").addEventListener("click", function () {
-  // tsugluulsan eeljiin onoog global deer ni nemhe
-  onoo[activePlayer] += eeljOnoo;
-  document.getElementById("score-" + activePlayer).textContent =
-    onoo[activePlayer];
-  // 100 hurch hojson esehiig shalgah
-  if (onoo[activePlayer] >= 20) {
-    document.getElementById("name-" + activePlayer).textContent = "Winner";
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.add("winner");
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.remove("active");
+  if (gameStatus) {
+    // tsugluulsan eeljiin onoog global deer ni nemhe
+    onoo[activePlayer] += eeljOnoo;
+    document.getElementById("score-" + activePlayer).textContent =
+      onoo[activePlayer];
+    // 100 hurch hojson esehiig shalgah
+    if (onoo[activePlayer] >= 20) {
+      gameStatus = false;
+      document.getElementById("name-" + activePlayer).textContent = "Winner";
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.add("winner");
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.remove("active");
+    } else {
+      eeljSolih();
+    }
   } else {
-    eeljSolih();
+    alert("game over. start new game");
   }
-  //eeljiin onoog 0 bolgono
 });
 //togloh eeljiig solih function
 function eeljSolih() {
